@@ -1,6 +1,12 @@
 #ifndef _SHELL_H_
 #define _SHELL_H_
 
+/*
+ * File: shell.h
+ * Dev: Tony Kipchirchir
+ *       Anthony Maiyo
+ */
+
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <sys/wait.h>
@@ -9,22 +15,27 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-
-typedef struct node {
-	struct node *next;
+/**
+ * struct lst_s - A new struct type defining a linked list.
+ * @dir: A directory path.
+ * @next: A pointer to another struct list_s.
+ */
+typedef struct lst_s 
+{
 	char *dir;
-} node_t;
+	struct lst_s *next;
+} lst_t;
 
+/* Helper Functions */
 char **_strtok(char *line, char *delim);
+char *get_location(char *command);
+list_t *get_path_dir(char *path);
+list_t *add_node_end(list_t **head, char *dir);
+void free_list(list_t *head);
+
+/* Builtins */
 char *_getenv(const char *name);
 int _setenv(const char *name, const char *value, int overwrite);
 int _unsetenv(const char *name);
-node_t *get_path_dir(char *path);
-char *get_location(char *command);
-
-node_t *add_node_end(node_t **head, char *dir);
-void free_list(node_t *head);
-
-
 
 #endif

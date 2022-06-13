@@ -1,4 +1,16 @@
+/*
+ * File: main.c
+ * Dev: Tony Kipchirchir
+ *       Anthony Maiyo
+ */
+
 #include "shell.h"
+
+/**
+ * main - Runs a simple UNIX command interpreter.
+ *
+ * Return: Always 0.
+ */
 int main(void)
 {
 	pid_t child_pid;
