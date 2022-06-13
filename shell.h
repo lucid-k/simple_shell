@@ -29,9 +29,9 @@ typedef struct lst_s
 /* Helper Functions */
 char **_strtok(char *line, char *delim);
 char *get_location(char *command);
-list_t *get_path_dir(char *path);
-list_t *add_node_end(list_t **head, char *dir);
-void free_list(list_t *head);
+lst_t *get_path_dir(char *path);
+lst_t *add_node_end(lst_t **head, char *dir);
+void free_list(lst_t *head);
 
 /* Builtins */
 char *_getenv(const char *name);
