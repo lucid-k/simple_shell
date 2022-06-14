@@ -73,9 +73,19 @@ lst_t *get_path_dir(char *path)
 	int index;
 	char **dirs;
 	lst_t *head = NULL;
+
 	dirs = _strtok(path, ":");
+	if (!dirs)
+		return (NULL);
 	for (index = 0; dirs[index]; index++)
-		add_node_end(&head, dirs[index]);
+	{
+		if (add_node_end(&head, dirs[index]) == NULL)
+		{
+			free_list(head);
+			free(dirs);
+			return (NULL);
+		}
+	}
 
 	free(dirs);
 	return (head);

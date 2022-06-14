@@ -33,7 +33,6 @@ char **_strtok(char *line, char *delim)
 	ptr = malloc(sizeof(char *) * (words + 1));
 	if (!ptr)
 	{
-		printf("Boom\n");
 		return (0);
 	}
 	token = strtok(line, delim);
@@ -45,7 +44,7 @@ char **_strtok(char *line, char *delim)
 			for (index -= 1; index >= 0; index--)
 				free(ptr[index]);
 			free(ptr);
-			exit(99);
+			return (NULL);
 		}
 		strcpy(ptr[index], token);
 		token = strtok(NULL, delim);
