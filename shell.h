@@ -22,7 +22,7 @@ extern char **environ;
  * @dir: A directory path.
  * @next: A pointer to another struct list_s.
  */
-typedef struct lst_s 
+typedef struct lst_s
 {
 	char *dir;
 	struct lst_s *next;
