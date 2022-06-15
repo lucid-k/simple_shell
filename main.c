@@ -7,7 +7,8 @@
 #include "shell.h"
 
 int execute(char **argv, char *name, int hist);
-char **clear_input(char **argv);
+char **get_args(char **argv);
+int run_args(char **argv, char *name, int *hist);
 
 int execute(char **argv, char *name, int hist)
 {
@@ -48,7 +49,7 @@ int execute(char **argv, char *name, int hist)
 	return (ret);
 }
 
-char **clear_input(char **argv)
+char **get_args(char **argv)
 {
 	size_t n = 0;
 	ssize_t read;
@@ -67,6 +68,26 @@ char **clear_input(char **argv)
 	return (argv);
 }
 
+int run_args(char **argv, char *name, int *hist)
+{
+	int ret, index;
+
+	argv = get_args(argv);
+	if (!argv)
+		return (-1);
+
+	ret = execute(argv, name, *hist);
+
+	(*hist)++;
+
+	for (index = 0; argv[index]; index++)
+		free(argv[index]);
+	free(argv);
+	argv = NULL;
+
+	return (ret);
+}
+
 /**
  * main - Runs a simple UNIX command interpreter.
  *
@@ -76,60 +97,24 @@ char **clear_input(char **argv)
 int main(int argc, char *argv[])
 {
 	int ret, hist = 1;
-	size_t n, index;
-	ssize_t read;
-	char *name, *line, *command;
+	char *name = argv[0];
 
-	name = argv[0];
 	if (argc != 1)
 		return (execute(argv + 1, name, hist));
 
 	if (!isatty(STDIN_FILENO))
 	{
-		argv = clear_input(argv);
-		while (argv)
-		{
-			command = argv[0];
-			ret = execute(argv, name, hist);
-			hist++;
-			for (index = 1; argv[index]; index++)
-				free(argv[index]);
-			free(argv);
-			free(command);
-			argv = NULL;
-			argv = clear_input(argv);
-		}
-		free(argv);
-		return (ret);
+		while (ret != -1)
+			ret = run_args(argv, name, &hist);
+		return (0);
 	}	
 
-	line = NULL;
 	while (1)
 	{
 		printf("$ ");
-		n = 0;
-		if ((read = getline(&line, &n, stdin)) == -1)
-		{
-			perror("read failed\n");
-			return (1);
-		}
-		argv = _strtok(line, " ");
-		if (!argv)
-		{
+		ret = run_args(argv, name, &hist);
+		if (ret == -1)
 			perror("Failed to tokenize\n");
-			continue;
-		}
-
-		command = argv[0];
-		ret = execute(argv, name, hist);
-		hist++;
-
-		for (index = 1; argv[index]; index++)
-			free(argv[index]);
-		free(argv);
-		free(line);
-		free(command);
-		return (ret);
 	}
 	return (ret);
 }
