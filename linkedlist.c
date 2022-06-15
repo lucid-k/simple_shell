@@ -1,6 +1,6 @@
 /*
  * File: linkedlist.c
- * Dev: Tony Kipchirchir
+ * Devs: Tony Kipchirchir
  *       Anthony Maiyo
  */
 

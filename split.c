@@ -1,7 +1,7 @@
 /*
  * File: split.c
- * Dev: Tony Kipchirchir
- *       Anthony Kibet
+ * Devs: Tony Kipchirchir
+ *       Anthony Maiyo
  */
 
 #include "shell.h"
@@ -15,8 +15,7 @@
  */
 char **_strtok(char *line, char *delim)
 {
-	char *token;
-	char **ptr;
+	char *token, **ptr;
 	int index;
 	size_t words = 0;
 
@@ -29,12 +28,11 @@ char **_strtok(char *line, char *delim)
 				words++;
 		}
 	}
+	/* replace \n with \0 */
 	line[index - 1] = '\0';
 	ptr = malloc(sizeof(char *) * (words + 1));
 	if (!ptr)
-	{
 		return (NULL);
-	}
 
 	token = strtok(line, delim);
 

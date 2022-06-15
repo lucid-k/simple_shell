@@ -1,6 +1,6 @@
 /*
  * File: errors.c
- * Dev: Tony Kipchirchir
+ * Devs: Tony Kipchirchir
  *       Anthony Maiyo
  */
 
@@ -8,8 +8,7 @@
 
 int num_len(int num);
 char *_itoa(int num);
-int create_error(char *name, int hist, char **argv, int err);
-
+int create_error(char *name, int hist, char **args, int err);
 /**
  * num_len - Counts the digit length of a number.
  * @num: The number to measure.
@@ -57,29 +56,36 @@ char *_itoa(int num)
 	return (buffer);
 }
 
+
 /**
  * create_error - Writes a custom error message to stderr.
  * @name: The name of the call causing the error.
  * @hist: The history number of the call.
- * @command: The command causing the error.
+ * @args: An array of arguments.
  * @err: The error value.
  *
  * Return: The error value.
  */
-int create_error(char *name, int hist, char **argv, int err)
+int create_error(char *name, int hist, char **args, int err)
 {
 	char *error;
 
 	switch (err)
 	{
+		case -1:
+			error = error_env(name, hist, args);
+			break;
 		case 2:
-			error = error_2(name, hist, argv);
+			if (*(args[0]) == 'e')
+				error = error_2_exit(name, hist, args);
+			else
+				error = error_2_cd(name, hist, args);
 			break;
 		case 126:
-			error = error_126(name, hist, argv);
+			error = error_126(name, hist, args);
 			break;
 		case 127:
-			error = error_127(name, hist, argv);
+			error = error_127(name, hist, args);
 			break;
 	}
 	write(STDERR_FILENO, error, strlen(error));
@@ -87,4 +93,5 @@ int create_error(char *name, int hist, char **argv, int err)
 	if (error)
 		free(error);
 	return (err);
+
 }

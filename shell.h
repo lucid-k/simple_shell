@@ -3,10 +3,11 @@
 
 /*
  * File: shell.h
- * Devs: Tony Kipchirchir
+ * Auth: Tony Kipchirchir
  *       Anthony Maiyo
  */
 
+#include <signal.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <sys/wait.h>
@@ -29,9 +30,9 @@ typedef struct list_s
 } list_t;
 
 /**
- * struct builtin_s - A structure type defining all builtin commands.
+ * struct builtin_s - A new struct type defining builtin commands.
  * @name: The name of the builtin command.
- * @f: A function pointer to the command's function.
+ * @f: A function pointer to the builtin command's function.
  */
 typedef struct builtin_s
 {
@@ -47,21 +48,28 @@ list_t *add_node_end(list_t **head, char *dir);
 void free_list(list_t *head);
 int num_len(int num);
 char *_itoa(int num);
-int create_error(char *name, int hist, char **argv, int err);
 
 /* Builtins */
-int (*get_builtin(char *command))(char **argv);
-int shellby_exit(char **argv);
-char *_getenv(const char *name);
-int _setenv(const char *name, const char *value, int overwrite);
-int _unsetenv(const char *name);
+int (*get_builtin(char *command))(char **args);
+int shellby_exit(char **args);
+int shellby_env(char **args);
+int shellby_setenv(char **args);
+int shellby_unsetenv(char **args);
+int shellby_cd(char **args);
 
-/* Error handling */
+/* Builtin Helpers */
+char **_copyenv(void);
+void free_env(void);
+char **_getenv(const char *name);
+
+/* Error Handling */
 int num_len(int num);
 char *_itoa(int num);
-int create_error(char *name, int hist, char **argv, int err);
-char *error_2(char *name, int hist, char **argv);
-char *error_126(char *name, int hist, char **argv);
-char *error_127(char *name, int hist, char **argv);
+int create_error(char *name, int hist, char **args, int err);
+char *error_env(char *name, int hist, char **args);
+char *error_2_exit(char *name, int hist, char **args);
+char *error_2_cd(char *name, int hist, char **args);
+char *error_126(char *name, int hist, char **args);
+char *error_127(char *name, int hist, char **args);
 
-#endif
+#endif /* _SHELL_H_ */

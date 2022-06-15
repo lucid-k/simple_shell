@@ -1,6 +1,6 @@
 /*
  * File: locate.c
- * Dev: Tony Kipchirchir
+ * Devs: Tony Kipchirchir
  *       Anthony Maiyo
  */
 
@@ -15,17 +15,17 @@
  */
 char *get_location(char *command)
 {
-	char *path, *temp;
+	char **path, *temp;
 	list_t *dirs, *head;
 	struct stat st;
 
 	path = _getenv("PATH");
-	if (!path)
-	{
+	if (!path && !(*path))
 		return (NULL);
-	}
-	dirs = get_path_dir(path + 5);
+
+	dirs = get_path_dir(*path + 5);
 	head = dirs;
+
 	while (dirs)
 	{
 		temp = malloc(strlen(dirs->dir) + strlen(command) + 2);
@@ -45,6 +45,8 @@ char *get_location(char *command)
 		dirs = dirs->next;
 		free(temp);
 	}
+
 	free_list(head);
+
 	return (NULL);
 }
