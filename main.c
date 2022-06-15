@@ -5,13 +5,14 @@
  */
 
 #include "shell.h"
+       #include <errno.h>
 
 int execute(char **argv, char *name, int hist);
 char **get_args(char **argv);
 int run_args(char **argv, char *name, int *hist);
 
 /**
- * execute - Executes a command in a child process
+ * execute - Executes a command in a child process.
  * @argv: An array of arguments.
  * @name: The name of the call.
  * @hist: The history number of the call.
@@ -43,12 +44,18 @@ int execute(char **argv, char *name, int hist)
 	{
 		if (!command || (access(command, F_OK) == -1))
 		{
-			return (create_error(name, hist, argv[0], 127));
+			if (errno == EACCES)
+				_exit(create_error(name, hist, argv, 126));
+			else
+				_exit(create_error(name, hist, argv, 127));
+		}
+		/*
 		if (access(command, X_OK) == -1)
 			return (create_error(name, hist, argv[0], 126));
-		if (execve(command, argv, NULL) == -1)
-			perror("Error:");
-		}
+		*/
+		execve(command, argv, NULL);
+		if (errno == EACCES)
+			_exit(create_error(name, hist, argv, 126));
 	}
 	else
 	{
@@ -60,6 +67,7 @@ int execute(char **argv, char *name, int hist)
 		free(command);
 	return (ret);
 }
+
 
 /**
  * get_args - Reads and tokenizes arguments from the command line.
@@ -99,12 +107,21 @@ char **get_args(char **argv)
 int run_args(char **argv, char *name, int *hist)
 {
 	int ret, index;
+	int (*builtin)(char **argv);
 
 	argv = get_args(argv);
 	if (!argv)
 		return (-1);
 
-	ret = execute(argv, name, *hist);
+	builtin = get_builtin(argv[0]);
+	if (builtin)
+	{
+		ret = builtin(argv);
+		if(ret)
+			create_error(name, *hist, argv, ret);
+	}
+	else
+		ret = execute(argv, name, *hist);
 
 	(*hist)++;
 
@@ -118,11 +135,11 @@ int run_args(char **argv, char *name, int *hist)
 
 /**
  * main - Runs a simple UNIX command interpreter.
- * @argc: argument counter from the stdin
- * @argv: an array of stdio (argument) vector
+ * @argc: The number of arguments supplied to the program.
+ * @argv: An array of pointers to the arguments.
+ *
  * Return: Always 0.
  */
-
 int main(int argc, char *argv[])
 {
 	int ret, hist = 1;

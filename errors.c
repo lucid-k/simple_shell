@@ -8,7 +8,7 @@
 
 int num_len(int num);
 char *_itoa(int num);
-int create_error(char **args, int err);
+int create_error(char *name, int hist, char **argv, int err);
 
 /**
  * num_len - Counts the digit length of a number.
@@ -66,34 +66,25 @@ char *_itoa(int num)
  *
  * Return: The error value.
  */
-int create_error(char *name, int hist, char *command, int err)
+int create_error(char *name, int hist, char **argv, int err)
 {
-	char *error, *hist_str;
-	int len;
+	char *error;
 
-	hist_str = _itoa(hist);
-	if (!hist_str)
-		return (err);
+	switch (err)
+	{
+		case 2:
+			error = error_2(name, hist, argv);
+			break;
+		case 126:
+			error = error_126(name, hist, argv);
+			break;
+		case 127:
+			error = error_127(name, hist, argv);
+			break;
+	}
+	write(STDERR_FILENO, error, strlen(error));
 
-	len = strlen(name) + strlen(hist_str) + strlen(command) + 6;
-	if (err == 127)
-		len += 10;
-	else
-		len += 18;
-	error = malloc(sizeof(char) * (len + 1));
-	if (!error)
-		return (err);
-
-	strcpy(error, name);
-	strcat(error, ": ");
-	strcat(error, hist_str);
-	strcat(error, ": ");
-	strcat(error, command);
-	if (err == 127)
-		strcat(error, ": not found\n");
-	else
-		strcat(error, ": Permission denied\n");
-
-	write(STDERR_FILENO, error, len);
+	if (error)
+		free(error);
 	return (err);
 }

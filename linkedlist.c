@@ -6,9 +6,9 @@
 
 #include "shell.h"
 
-lst_t *add_node_end(lst_t **head, char *dir);
-void free_list(lst_t *head);
-lst_t *get_path_dir(char *path);
+list_t *add_node_end(list_t **head, char *dir);
+void free_list(list_t *head);
+list_t *get_path_dir(char *path);
 
 /**
  * add_node_end - Adds a node to the end of a list_t linked list.
@@ -18,10 +18,10 @@ lst_t *get_path_dir(char *path);
  * Return: If an error occurs - NULL.
  *         Otherwise - a pointer to the new node.
  */
-lst_t *add_node_end(lst_t **head, char *dir)
+list_t *add_node_end(list_t **head, char *dir)
 {
-	lst_t *new_node = malloc(sizeof(lst_t));
-	lst_t *last;
+	list_t *new_node = malloc(sizeof(list_t));
+	list_t *last;
 
 	if (!new_node)
 		return (NULL);
@@ -36,10 +36,9 @@ lst_t *add_node_end(lst_t **head, char *dir)
 			last = last->next;
 		last->next = new_node;
 	}
+
 	else
-	{
 		*head = new_node;
-	}
 
 	return (new_node);
 }
@@ -48,9 +47,9 @@ lst_t *add_node_end(lst_t **head, char *dir)
  * free_list - Frees a list_t linked list.
  * @head: The head of the list_t list.
  */
-void free_list(lst_t *head)
+void free_list(list_t *head)
 {
-	lst_t *next;
+	list_t *next;
 
 	while (head)
 	{
@@ -68,15 +67,25 @@ void free_list(lst_t *head)
  *
  * Return: A pointer to the initialized linked list.
  */
-lst_t *get_path_dir(char *path)
+list_t *get_path_dir(char *path)
 {
 	int index;
-	char **dirs;
-	lst_t *head = NULL;
+	char **dirs, *path_copy;
+	list_t *head = NULL;
 
-	dirs = _strtok(path, ":");
-	if (!dirs)
+	path_copy = malloc(strlen(path) + 1);
+	if (!path_copy)
 		return (NULL);
+
+	strcpy(path_copy, path);
+
+	dirs = _strtok(path_copy, ":");
+	if (!dirs)
+	{
+		free(path_copy);
+		return (NULL);
+	}
+
 	for (index = 0; dirs[index]; index++)
 	{
 		if (add_node_end(&head, dirs[index]) == NULL)
@@ -87,6 +96,8 @@ lst_t *get_path_dir(char *path)
 		}
 	}
 
+	free(path_copy);
 	free(dirs);
+
 	return (head);
 }
