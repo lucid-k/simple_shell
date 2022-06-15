@@ -11,7 +11,7 @@ char **get_args(char **argv);
 int run_args(char **argv, char *name, int *hist);
 
 /**
- * execute - Executes a command in a child process.
+ * execute - Executes a command in a child process
  * @argv: An array of arguments.
  * @name: The name of the call.
  * @hist: The history number of the call.
