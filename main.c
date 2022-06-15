@@ -118,7 +118,8 @@ int run_args(char **argv, char *name, int *hist)
 
 /**
  * main - Runs a simple UNIX command interpreter.
- *
+ * @argc: argument counter from the stdin
+ * @argv: an array of stdio (argument) vector
  * Return: Always 0.
  */
 
