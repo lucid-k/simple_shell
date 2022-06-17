@@ -1,7 +1,7 @@
 /*
  * File: getline.c
  * Auth: Anthony Maiyo
- *       Tony Kichirchir
+ *       Tony Kipchirchir
  */
 
 #include "shell.h"
@@ -84,6 +84,7 @@ void assign_lineptr(char **lineptr, size_t *n, char *buffer, size_t b)
 			*n = b;
 		else
 			*n = 120;
+		free(*lineptr);
 		*lineptr = buffer;
 	}
 	else
